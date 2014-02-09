@@ -57,7 +57,7 @@ describe("CloudFrontLog", function () {
       expect(p['date']).toEqual('2014-02-07');
       expect(p['hour']).toEqual('11');
       expect(p['dt']).toEqual('20140207110337');
-      expect(p['ua']).toEqual('IE 10.0.0 / Windows 7');
+      expect(p['ua']).toEqual('IE_10/Windows_7');
     });
 
   });
@@ -66,7 +66,7 @@ describe("CloudFrontLog", function () {
     it("should line is parsed", function () {
       var test_line = '2014-02-07	11:03:37	NRT54	46456	125.204.230.244	GET	dwkjexg5kaiaa.cloudfront.net	/oo/xx/191.js	200	http://example.com/help/about/?vos=nkeyantp2013060403	Mozilla/5.0%2520(compatible;%2520MSIE%252010.0;%2520Windows%2520NT%25206.1;%2520WOW64;%2520Trident/6.0)	-	-	Hit	-CiiLZ93Rlk2QIUJQSRTSktYkVYB6D70Uy6i_FOdOLyS4Enhds23XA==	dwkjexg5kaiaa.cloudfront.net	http	360';
       var c = cf.conv(test_line);
-      expect(c).toEqual("191\tIE 10.0.0 / Windows 7\t2014-02-07\t11\t20140207110337");
+      expect(c).toEqual("191\tIE_10/Windows_7\t2014-02-07\t11\t20140207110337");
     });
 
 
@@ -79,15 +79,34 @@ describe("CloudFrontLog", function () {
       };
       cf.load(testfile);
       expect(out).toEqual([
-        "191\tIE 10.0.0 / Windows 7\t2014-02-07\t11\t20140207110337",
-        "33\tIE 9.0.0 / Windows Vista\t2014-02-07\t11\t20140207110328",
-        "54\tMobile Safari 7.0.0 / iOS 7.0.4\t2014-02-07\t11\t20140207110345"
+        "191\tIE_10/Windows_7\t2014-02-07\t11\t20140207110337",
+        "33\tIE_9/Windows_Vista\t2014-02-07\t11\t20140207110328",
+        "54\tMobile_Safari_7/iOS_7\t2014-02-07\t11\t20140207110345"
       ]);
-
     });
-
-
-
+    it("filter by range ", function () {
+      var out = [];
+      cf.writer = function (str){
+        out.push(str)
+      };
+      cf.start = 20140207110329;
+      cf.end = 20140207110344;
+      cf.load(testfile);
+      expect(out).toEqual([
+        "191\tIE_10/Windows_7\t2014-02-07\t11\t20140207110337"
+      ]);
+    });
+    it("filter by id", function () {
+      var out = [];
+      cf.writer = function (str){
+        out.push(str)
+      };
+      cf.id = 54;
+      cf.load(testfile);
+      expect(out).toEqual([
+        "54\tMobile_Safari_7/iOS_7\t2014-02-07\t11\t20140207110345"
+      ]);
+    });
   });
 
 });   
