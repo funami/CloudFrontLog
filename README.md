@@ -39,7 +39,7 @@ pick a custom id from url and print short user agent and date time
 cat [cloud flont files] | ./conv.js
 ```
 
-filter it by datetime
+filter it by custome id
 
 ```
 cat [cloud flont files] | ./conv.js -s 201402010000 -e 201402020000 -i 100
